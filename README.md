@@ -5,11 +5,19 @@ It's a cryptocurrency app that shows live price of crypto coins such as BTC, ETH
 ### It renders the UI components based on the platform that the app is running on.
 
 ## Screenshots
+
+
 ### Android DropdownButton:
-<img src="screenshots/screenshot1.jpg", width="400">
-<img src="screenshots/screenshot2.jpg", width="400">
+
+![](screenshots/screenshot1.jpg)
+![](screenshots/screenshot2.jpg)
+
+
 ### IOS CupertinoPicker:
-<img src="screenshots/screenshot3.jpg", width="400">
+
+![](screenshots/screenshot3.jpg)
+
+
 
 ## Preparing Dependencies
 
