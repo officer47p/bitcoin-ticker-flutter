@@ -3,6 +3,7 @@ import './coin_data.dart';
 import 'dart:io' show Platform;
 import 'package:flutter/cupertino.dart';
 import 'price_card.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class PriceScreen extends StatefulWidget {
   @override
@@ -25,7 +26,33 @@ class _PriceScreenState extends State<PriceScreen> {
   void getCoinsData(currency) async {
     for (String coin in cryptoList) {
       dynamic coinPrice = await coinData.getCoinData(coin, currency);
-      priceData[coin] = coinPrice;
+      if (coinPrice is Error) {
+        for (String coin in cryptoList) {
+          priceData[coin] = "?";
+        }
+        Alert(
+          context: context,
+          style: AlertStyle(backgroundColor: Colors.white),
+          type: AlertType.error,
+          title: "Oops!",
+          desc: "Something went wrong, try again ?",
+          buttons: [
+            DialogButton(
+              child: Text(
+                "Yeah",
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+              onPressed: () => Navigator.pop(context),
+              width: 120,
+            )
+          ],
+        ).show().whenComplete(() {
+          getCoinsData(selectedCurrency);
+        });
+        break;
+      } else {
+        priceData[coin] = coinPrice;
+      }
     }
     setState(() {});
   }

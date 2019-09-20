@@ -35,8 +35,17 @@ const String apiUrl = "https://apiv2.bitcoinaverage.com/indices/global/ticker/";
 
 class CoinData {
   dynamic getCoinData(coin, currency) async {
-    http.Response response = await http.get("${apiUrl}${coin}${currency}");
-    Map data = jsonDecode(response.body);
-    return data["last"];
+    try {
+      http.Response response = await http
+          .get("${apiUrl}${coin}${currency}")
+          .timeout(Duration(seconds: 10));
+      if (response.statusCode == 200) {
+        Map data = jsonDecode(response.body);
+        return data["last"];
+      }
+      throw "";
+    } catch (err) {
+      return Error();
+    }
   }
 }
