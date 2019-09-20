@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import './coin_data.dart';
 import 'dart:io' show Platform;
 import 'package:flutter/cupertino.dart';
+import 'price_card.dart';
 
 class PriceScreen extends StatefulWidget {
   @override
@@ -9,20 +10,35 @@ class PriceScreen extends StatefulWidget {
 }
 
 class _PriceScreenState extends State<PriceScreen> {
-  String selectedCurrency = "EUR";
-  dynamic price = "?";
+  String selectedCurrency = currenciesList[0];
+  Map priceData = {};
   CoinData coinData = CoinData();
   @override
   void initState() {
     super.initState();
-    getCoinData(selectedCurrency);
+    for (String coin in cryptoList) {
+      priceData[coin] = "?";
+    }
+    getCoinsData(selectedCurrency);
   }
 
-  void getCoinData(currency) async {
-    dynamic coinPrice = await coinData.getCoinData(currency);
-    setState(() {
-      price = coinPrice;
-    });
+  void getCoinsData(currency) async {
+    for (String coin in cryptoList) {
+      dynamic coinPrice = await coinData.getCoinData(coin, currency);
+      priceData[coin] = coinPrice;
+    }
+    setState(() {});
+  }
+
+  List<Widget> getPriceWidgets() {
+    List<Widget> priceWidgets = [];
+    for (String coin in cryptoList) {
+      priceWidgets.add(PriceCard(
+          coin: coin,
+          price: priceData[coin],
+          selectedCurrency: selectedCurrency));
+    }
+    return priceWidgets;
   }
 
   DropdownButton<String> androidDropdown() {
@@ -39,10 +55,12 @@ class _PriceScreenState extends State<PriceScreen> {
       value: selectedCurrency,
       items: items,
       onChanged: (value) {
+        selectedCurrency = value;
         setState(() {
-          selectedCurrency = value;
-          price = "?";
-          getCoinData(selectedCurrency);
+          for (String coin in cryptoList) {
+            priceData[coin] = "?";
+          }
+          getCoinsData(selectedCurrency);
         });
       },
     );
@@ -54,13 +72,16 @@ class _PriceScreenState extends State<PriceScreen> {
       items.add(Text(currency));
     }
     return CupertinoPicker(
+      scrollController: FixedExtentScrollController(initialItem: 0),
       backgroundColor: Colors.lightBlue,
       itemExtent: 32.0,
       onSelectedItemChanged: (index) {
         setState(() {
           selectedCurrency = currenciesList[index];
-          price = "?";
-          getCoinData(selectedCurrency);
+          for (String coin in cryptoList) {
+            priceData[coin] = "?";
+          }
+          getCoinsData(selectedCurrency);
         });
       },
       children: items,
@@ -77,33 +98,16 @@ class _PriceScreenState extends State<PriceScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Padding(
-            padding: EdgeInsets.fromLTRB(18.0, 18.0, 18.0, 0),
-            child: Card(
-              color: Colors.lightBlueAccent,
-              elevation: 5.0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
-                child: Text(
-                  '1 BTC = ${price} ${selectedCurrency}',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: getPriceWidgets(),
           ),
           Container(
             height: 150.0,
             alignment: Alignment.center,
             padding: EdgeInsets.only(bottom: 30.0),
             color: Colors.lightBlue,
-            child: Platform.isIOS ? androidDropdown() : iOSPicker(),
+            child: Platform.isAndroid ? androidDropdown() : iOSPicker(),
           ),
         ],
       ),

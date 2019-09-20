@@ -34,8 +34,8 @@ const List<String> cryptoList = [
 const String apiUrl = "https://apiv2.bitcoinaverage.com/indices/global/ticker/";
 
 class CoinData {
-  dynamic getCoinData(currency) async {
-    http.Response response = await http.get("${apiUrl}BTC${currency}");
+  dynamic getCoinData(coin, currency) async {
+    http.Response response = await http.get("${apiUrl}${coin}${currency}");
     Map data = jsonDecode(response.body);
     return data["last"];
   }
