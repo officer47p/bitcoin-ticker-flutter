@@ -9,13 +9,16 @@ It's a cryptocurrency app that shows live price of crypto coins such as BTC, ETH
 
 ### Android DropdownButton:
 
-![](screenshots/screenshot1.jpg)
-![](screenshots/screenshot2.jpg)
+![screenshot1](screenshots/screenshot1.jpg)
+![screenshot2](screenshots/screenshot2.jpg)
 
 
 ### IOS CupertinoPicker:
 
-![](screenshots/screenshot3.jpg)
+![screenshot3](screenshots/screenshot3.jpg)
+
+### Alert Box:
+![screenshot4](screenshots/screenshot4.jpg)
 
 
 
